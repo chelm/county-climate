@@ -2,8 +2,9 @@ var exec = require('child_process').exec,
   async = require('async');
 
 var q = async.queue(function(task, callback){
-  console.log(task.info);
-  exec('curl -X POST --data "'+task.form+'" http://wonder.cdc.gov/controller/datarequest/D60a -o '+ (k++) +'.tsv', function(err){
+  var cmd = 'curl -X POST --data "'+task.form+'" http://wonder.cdc.gov/controller/datarequest/D60a -o data/'+ (k++) +'.tsv';
+  console.log(cmd);
+  exec(cmd, function(err){
     console.log(err)
     callback();
   });
@@ -24,7 +25,7 @@ while ( i < 13){
   var j = 1;
   while ( j < days+1){
     day = ((j+'').length == 1) ? '0'+j : j;
-    q.push({info: form.replace(/%month/g, month).replace(/%day/g, day)});
+    q.push({form: form.replace(/%month/g, month).replace(/%day/g, day)});
     j++;
   }
   i++;

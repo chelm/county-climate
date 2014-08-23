@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  background: #fff;
+}
+
+path {
+  fill: #fff;
+  stroke: #fff;
+  stroke-width:0px;
+}
+
+path:hover {
+  fill: red;
+}
+
+path.red {
+  fill: #39c;
+}
+
+path.blue {
+  fill: #08c;
+}
+
+.axis {
+  font: 10px sans-serif;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.axis .domain {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .3;
+  stroke-width: 10px;
+  stroke-linecap: round;
+}
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 8px;
+  stroke-linecap: round;
+}
+
+.slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  pointer-events: none;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+var width = 960,
+    height = 600;
+
+var path = d3.geo.path();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var x = d3.scale.linear()
+    .domain([0, 365])
+    .range([0, width-100])
+    .clamp(true);
+
+var brush = d3.svg.brush()
+    .x(x)
+    .extent([0, 0])
+    .on("brush", brushed);
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(50," + 550 + ")")
+    .call(d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickSize(0)
+      .tickPadding(12))
+  .select(".domain")
+  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+    .attr("class", "halo");
+
+var slider = svg.append("g")
+    .attr("class", "slider")
+    .call(brush);
+
+slider.select(".background")
+    .attr("height", height);
+
+var handle = slider.append("circle")
+    .attr("class", "handle")
+    .attr("transform", "translate(50," + 550 + ")")
+    .attr("r", 9);
+
+function brushed() {
+  var value = brush.extent()[0];
+
+  if (d3.event.sourceEvent) { // not a programmatic event
+    value = x.invert(d3.mouse(this)[0]);
+    brush.extent([value, value]);
+  }
+
+  handle.attr("cx", x(value));
+  d3.selectAll('path.county')
+    .style("fill",function(d){
+      if ( temps[ d.properties.FIPS ] ){ 
+        var cls = color(temps[ d.properties.FIPS ][value]);
+        return cls;
+      } else {
+        return '';
+      }
+    });
+}
+
+
+var color = d3.scale.linear()
+    .domain([40, 90])
+    .range(["blue", "red"]);
+
+var temps, index = 0;
+
+d3.json("out.json", function(error, data) {
+  temps = data;
+  d3.json("counties.json", function(error, topology) {
+    svg.selectAll("path")
+        .data(topojson.feature(topology, topology.objects.UScounties).features)
+      .enter().append("path")
+        .attr("d", path)
+        .attr('class', 'county')
+        .style("fill",function(d){ 
+          //console.log( d.properties.FIPS);
+          //console.log( temps[ d.properties.FIPS ][index] );
+          if ( temps[ d.properties.FIPS ] ){ 
+            var cls = color(temps[ d.properties.FIPS ][index]);
+            return cls;
+          } else {
+            return '';
+          }
+        });
+  });
+});
+
+</script>
