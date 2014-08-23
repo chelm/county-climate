@@ -112,13 +112,13 @@ function brushed() {
   }
 
   handle.attr("cx", x(value));
-  d3.selectAll('path.county')
+  d3.selectAll('path.county') 
     .style("fill",function(d){
       if ( temps[ d.properties.FIPS ] ){ 
-        var cls = color(temps[ d.properties.FIPS ][value]);
+        var cls = color(temps[ d.properties.FIPS ][Math.floor(value)]);
         return cls;
       } else {
-        return '';
+        return 'grey';
       }
     });
 }
@@ -142,7 +142,7 @@ d3.json("out.json", function(error, data) {
           //console.log( d.properties.FIPS);
           //console.log( temps[ d.properties.FIPS ][index] );
           if ( temps[ d.properties.FIPS ] ){ 
-            var cls = color(temps[ d.properties.FIPS ][index]);
+            var cls = color(temps[ d.properties.FIPS ][100]);
             return cls;
           } else {
             return '';
