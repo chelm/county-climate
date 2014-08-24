@@ -58,6 +58,7 @@ path.blue {
 
 </style>
 <body>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="moment.js"></script>
@@ -68,7 +69,7 @@ var width = window.innerWidth;
 
 var projection = d3.geo.albersUsa()
     .scale(1280)
-    .translate([width / 2, height / 2]);
+    .translate([width / 2, height / 2.2]);
 
 var path = d3.geo.path()
     .projection(projection);
@@ -160,6 +161,48 @@ d3.json("out.json", function(error, data) {
           }
         });
   });
+});
+
+$(window).on('resize', function() {
+  console.log('on resize! TODO make this work. ')
+  // get width/height with container selector (body also works)
+  width = window.innerWidth;
+  height = window.innerHeight;
+
+  projection = d3.geo.albersUsa()
+    .scale(1280)
+    .translate([width / 2, height / 2.2]);
+
+  path = d3.geo.path()
+    .projection(projection);
+
+  // set attrs and 'resume' force 
+  svg.attr('width', width);
+  svg.attr('height', height);
+  d3.selectAll(".county")
+    .attr("d", path);
+
+  x = d3.scale.linear()
+    .domain([0, 365])
+    .range([0, width-100])
+    .clamp(true);
+
+  brush = d3.svg.brush()
+    .x(x)
+    .extent([0, 0])
+    .on("brush", brushed);
+
+  d3.selectAll('.axis')
+    .attr("transform", "translate(50," + (height - 50) + ")")
+    .call(d3.svg.axis()
+      .scale(x)
+    )
+    .select(".domain")
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+      .attr("class", "halo");
+
+  d3.selectAll('circle')
+    .attr("transform", "translate(50," + (height - 50) + ")")
 });
 
 </script>
