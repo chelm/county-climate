@@ -3,6 +3,8 @@
 <style>
 
 body {
+  margin:0px;
+  padding:0px;
   background: #fff;
 }
 
@@ -58,12 +60,19 @@ path.blue {
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="moment.js"></script>
 <script>
 
-var width = 960,
-    height = 600;
+var width = window.innerWidth;
+    height = window.innerHeight;
 
-var path = d3.geo.path();
+var projection = d3.geo.albersUsa()
+    .scale(1280)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+    .projection(projection);
+//var path = d3.geo.path();
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -81,7 +90,7 @@ var brush = d3.svg.brush()
 
 svg.append("g")
     .attr("class", "x axis")
-    .attr("transform", "translate(50," + 550 + ")")
+    .attr("transform", "translate(50," + (height - 50) + ")")
     .call(d3.svg.axis()
       .scale(x)
       .orient("bottom")
@@ -100,7 +109,7 @@ slider.select(".background")
 
 var handle = slider.append("circle")
     .attr("class", "handle")
-    .attr("transform", "translate(50," + 550 + ")")
+    .attr("transform", "translate(50," + (height - 50) + ")")
     .attr("r", 9);
 
 function brushed() {
@@ -133,6 +142,7 @@ var temps, index = 0;
 
 d3.json("out.json", function(error, data) {
   temps = data;
+  console.log('data', data);
   d3.json("counties.json", function(error, topology) {
     svg.selectAll("path")
         .data(topojson.feature(topology, topology.objects.UScounties).features)
