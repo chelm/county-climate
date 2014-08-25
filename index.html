@@ -11,7 +11,7 @@
     path.red {
       fill: #39c;
     }
-    
+
     body {
       margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;
       padding: 0;
@@ -68,7 +68,7 @@
       height: 40px;
       width: 100%;
       bottom: 0px;
-      background: rgba(27, 27, 27, 0.8);
+      background: rgba(227, 227, 227, 0.8);
       cursor:pointer;
     }
     #slide, .slider {
@@ -78,7 +78,24 @@
     }
     #slide-container .ui-slider-handle {
       cursor:pointer;
-      background: #3887BE;
+      background: #446780;
+      pointer-events:none;
+      border: none;
+      width: 40px;
+      height: 40px;
+      top: 0;
+      position: absolute;
+      z-index: 2;
+      left:40px;
+      color: #FFF;
+      font-size: 2em;
+      padding: 6px;
+      padding-left: 6px;
+      padding-top: 8px;
+    }
+    #slide-container .ui-play-pause {
+      cursor:pointer;
+      background: #446780;
       border: none;
       width: 40px;
       height: 40px;
@@ -89,7 +106,8 @@
       color: #FFF;
       font-size: 2em;
       padding: 6px;
-      padding-left: 9px;
+      padding-left: 6px;
+      padding-top: 7px;
     }
     </style>
     <body>
@@ -110,7 +128,8 @@
     <div id="slide-container">
       <svg id="slide">
       </svg>
-      <i class="ui-slider-handle glyphicon glyphicon-forward" href="#"></i> 
+      <i class="ui-play-pause glyphicon glyphicon-play" href="#"></i> 
+      <i class="ui-slider-handle glyphicon glyphicon-resize-horizontal" href="#"></i> 
     </div>
   </body>
 </html>

@@ -2,6 +2,7 @@ var App = function(){
   var self = this;
   this.width = window.innerWidth;
   this.height = window.innerHeight;
+  self._stop_animating = true;
 
   this.set();
   this.load();
@@ -14,8 +15,15 @@ var App = function(){
 
   });
 
-  $('.ui-slider-handle').on('click', function() {
-    self.animate();
+  $('.ui-play-pause').on('click', function() {
+    if ( self._stop_animating === true ) {
+      $(this).removeClass('glyphicon-play').addClass('glyphicon-pause');
+      self._stop_animating = false;
+      self.animate();
+    } else {
+      $(this).removeClass('glyphicon-pause').addClass('glyphicon-play');
+      self._stop_animating = true;
+    }
   })
 };
 
@@ -35,7 +43,7 @@ App.prototype.set = function() {
 
   this.x = d3.scale.linear()
       .domain([0, 365])
-      .range([0, this.width-40])
+      .range([40, this.width-40])
       .clamp(true);
 
   this.brush = d3.svg.brush()
@@ -45,21 +53,6 @@ App.prototype.set = function() {
         self.brushed(this)
       });
 
-  /*
-  d3.selectAll('.halo').remove();
-
-  this.bar = d3.select("#slide").append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + (15) + ")")
-      .call(d3.svg.axis()
-        .scale(self.x)
-        .orient("bottom")
-        .tickSize(0)
-        .tickPadding(12))
-    .select(".domain")
-    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr("class", "halo");
-  */
   this.slider = d3.select("#slide").append("g")
       .attr("class", "slider")
       .call(self.brush);
@@ -68,18 +61,13 @@ App.prototype.set = function() {
      .attr("height", 40)
      .attr('width', 1220);
 
-  //this.handle = this.slider.append("circle")
-  //    .attr("class", "handle")
-  //    .attr("transform", "translate(50," + (15) + ")")
-  //    .attr("r", 9);
-
   this.color = d3.scale.linear()
       .domain([31.99, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 96.77])
       .range(['#0050fb', '#3367f4', '#447ded', '#4d92e6', '#4fa8df', '#82b3c3', '#b0bb9d', '#d1c275', '#ebca45', '#fcc707', '#fead15', '#fe911d', '#fd7321', '#fb4f24']);
       //.range(['#0050fb', '#3e65f2', '#6077e5', '#7c86d5', '#9492c2', '#a99cae', '#bca298', '#cda581', '#dba56b', '#e8a055', '#f19641', '#f88631', '#fc7026', '#fb4f24']);
 
 
-  this.animate();
+  //this.animate();
 }
 
 App.prototype.animate = function() {
@@ -103,6 +91,7 @@ App.prototype.brushed = function(e) {
   if ( d3.event ) {
     if (d3.event.sourceEvent) { // not a programmatic event
       this._stop_animating = true;
+      $(this).removeClass('glyphicon-play').addClass('glyphicon-pause');
       value = this.x.invert(d3.mouse(e)[0]);
       this.brush.extent([value, value]);
       this.t = value;
