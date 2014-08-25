@@ -3,6 +3,8 @@
 <style>
 
 body {
+  margin:0px;
+  padding:0px;
   background: #fff;
 }
 
@@ -56,99 +58,14 @@ path.blue {
 
 </style>
 <body>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
-<script>
-
-var width = 960,
-    height = 600;
-
-var path = d3.geo.path();
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-var x = d3.scale.linear()
-    .domain([0, 365])
-    .range([0, width-100])
-    .clamp(true);
-
-var brush = d3.svg.brush()
-    .x(x)
-    .extent([0, 0])
-    .on("brush", brushed);
-
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(50," + 550 + ")")
-    .call(d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .tickSize(0)
-      .tickPadding(12))
-  .select(".domain")
-  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-    .attr("class", "halo");
-
-var slider = svg.append("g")
-    .attr("class", "slider")
-    .call(brush);
-
-slider.select(".background")
-    .attr("height", height);
-
-var handle = slider.append("circle")
-    .attr("class", "handle")
-    .attr("transform", "translate(50," + 550 + ")")
-    .attr("r", 9);
-
-function brushed() {
-  var value = brush.extent()[0];
-
-  if (d3.event.sourceEvent) { // not a programmatic event
-    value = x.invert(d3.mouse(this)[0]);
-    brush.extent([value, value]);
-  }
-
-  handle.attr("cx", x(value));
-  d3.selectAll('path.county') 
-    .style("fill",function(d){
-      if ( temps[ d.properties.FIPS ] ){ 
-        var cls = color(temps[ d.properties.FIPS ][Math.floor(value)]);
-        return cls;
-      } else {
-        return 'grey';
-      }
-    });
-}
-
-
-var color = d3.scale.linear()
-    .domain([40, 90])
-    .range(["blue", "red"]);
-
-var temps, index = 0;
-
-d3.json("out.json", function(error, data) {
-  temps = data;
-  d3.json("counties.json", function(error, topology) {
-    svg.selectAll("path")
-        .data(topojson.feature(topology, topology.objects.UScounties).features)
-      .enter().append("path")
-        .attr("d", path)
-        .attr('class', 'county')
-        .style("fill",function(d){ 
-          //console.log( d.properties.FIPS);
-          //console.log( temps[ d.properties.FIPS ][index] );
-          if ( temps[ d.properties.FIPS ] ){ 
-            var cls = color(temps[ d.properties.FIPS ][100]);
-            return cls;
-          } else {
-            return '';
-          }
-        });
+<script src="js/moment.js"></script>
+<script src="js/app.js"></script>
+<script> 
+  var app;
+  $(document).on('ready', function() {
+    app = new App();
   });
-});
-
 </script>
