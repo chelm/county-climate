@@ -24,7 +24,8 @@ var App = function(){
       $(this).removeClass('glyphicon-pause').addClass('glyphicon-play');
       self._stop_animating = true;
     }
-  })
+  });
+
 };
 
 App.prototype.set = function() {
@@ -66,6 +67,10 @@ App.prototype.set = function() {
       .range(['#0050fb', '#3367f4', '#447ded', '#4d92e6', '#4fa8df', '#82b3c3', '#b0bb9d', '#d1c275', '#ebca45', '#fcc707', '#fead15', '#fe911d', '#fd7321', '#fb4f24']);
       //.range(['#0050fb', '#3e65f2', '#6077e5', '#7c86d5', '#9492c2', '#a99cae', '#bca298', '#cda581', '#dba56b', '#e8a055', '#f19641', '#f88631', '#fc7026', '#fb4f24']);
 
+  d3.selectAll('#legend div')
+    .style('background', function(d){
+      return self.color(d3.select(this).node().id);
+    });
 
   //this.animate();
 }
