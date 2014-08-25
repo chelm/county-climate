@@ -70,6 +70,8 @@ App.prototype.set = function() {
   //this.animate();
 }
 
+
+
 App.prototype.animate = function() {
   var self = this;
   this.t = this.t || 0;
@@ -85,9 +87,12 @@ App.prototype.animate = function() {
   });
 }
 
+
+
 App.prototype.brushed = function(e) {
   var self = this;
   var value = this.brush.extent()[0];
+
   if ( d3.event ) {
     if (d3.event.sourceEvent) { // not a programmatic event
       this._stop_animating = true;
@@ -101,6 +106,8 @@ App.prototype.brushed = function(e) {
     this.brush.extent([value, value]);
   }
   
+  this.setDate(value);
+
   $('.ui-slider-handle').css('left', this.x(value)+'px');
   d3.selectAll('path.county') 
     .style("fill",function(d){
@@ -112,6 +119,21 @@ App.prototype.brushed = function(e) {
       }
     });
 }
+
+
+
+App.prototype.setDate = function(d) {
+  var dateFromDay = function(year, day){
+    var dx = new Date(year, 0); // initialize a date in `year-01-01`
+    return new Date(dx.setDate(day)); // add the number of days
+  }
+
+  var date = dateFromDay(2010, d); 
+  date = moment(date).format("MMMM DD");
+  $('#date').html(date);
+}
+
+
 
 App.prototype.load = function() {
   var self = this;
