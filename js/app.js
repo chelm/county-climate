@@ -13,6 +13,10 @@ var App = function(){
     self.update();
 
   });
+
+  $('.ui-slider-handle').on('click', function() {
+    self.animate();
+  })
 };
 
 App.prototype.set = function() {
@@ -31,7 +35,7 @@ App.prototype.set = function() {
 
   this.x = d3.scale.linear()
       .domain([0, 365])
-      .range([0, this.width-100])
+      .range([0, this.width-40])
       .clamp(true);
 
   this.brush = d3.svg.brush()
@@ -41,11 +45,12 @@ App.prototype.set = function() {
         self.brushed(this)
       });
 
+  /*
   d3.selectAll('.halo').remove();
 
-  this.svg.append("g")
+  this.bar = d3.select("#slide").append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(50," + (this.height - 50) + ")")
+      .attr("transform", "translate(0," + (15) + ")")
       .call(d3.svg.axis()
         .scale(self.x)
         .orient("bottom")
@@ -54,35 +59,60 @@ App.prototype.set = function() {
     .select(".domain")
     .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
       .attr("class", "halo");
-
-  this.slider = this.svg.append("g")
+  */
+  this.slider = d3.select("#slide").append("g")
       .attr("class", "slider")
       .call(self.brush);
 
   this.slider.select(".background")
-      .attr("height", this.height);
+     .attr("height", 40)
+     .attr('width', 1220);
 
-  this.handle = this.slider.append("circle")
-      .attr("class", "handle")
-      .attr("transform", "translate(50," + (this.height - 50) + ")")
-      .attr("r", 9);
+  //this.handle = this.slider.append("circle")
+  //    .attr("class", "handle")
+  //    .attr("transform", "translate(50," + (15) + ")")
+  //    .attr("r", 9);
 
   this.color = d3.scale.linear()
       .domain([31.99, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 96.77])
       .range(['#0050fb', '#3367f4', '#447ded', '#4d92e6', '#4fa8df', '#82b3c3', '#b0bb9d', '#d1c275', '#ebca45', '#fcc707', '#fead15', '#fe911d', '#fd7321', '#fb4f24']);
       //.range(['#0050fb', '#3e65f2', '#6077e5', '#7c86d5', '#9492c2', '#a99cae', '#bca298', '#cda581', '#dba56b', '#e8a055', '#f19641', '#f88631', '#fc7026', '#fb4f24']);
 
+
+  this.animate();
+}
+
+App.prototype.animate = function() {
+  var self = this;
+  this.t = this.t || 0;
+  this._stop_animating = false;
+
+  d3.timer(function() {
+    self.brushed(null);
+    self.t++;
+    if ( self.t === 360 ) {
+      self.t = 0;
+    }
+    return self._stop_animating;
+  });
 }
 
 App.prototype.brushed = function(e) {
   var self = this;
   var value = this.brush.extent()[0];
-  if (d3.event.sourceEvent) { // not a programmatic event
-    value = this.x.invert(d3.mouse(e)[0]);
+  if ( d3.event ) {
+    if (d3.event.sourceEvent) { // not a programmatic event
+      this._stop_animating = true;
+      value = this.x.invert(d3.mouse(e)[0]);
+      this.brush.extent([value, value]);
+      this.t = value;
+    } 
+  } else {
+    value = this.t;
     this.brush.extent([value, value]);
   }
-
-  this.handle.attr("cx", this.x(value));
+  
+  $('.ui-slider-handle').css('left', this.x(value)+'px');
   d3.selectAll('path.county') 
     .style("fill",function(d){
       if ( self.temps[ d.properties.FIPS ] ){ 
@@ -135,7 +165,7 @@ App.prototype.update = function() {
 
   this.x = d3.scale.linear()
       .domain([0, 365])
-      .range([0, this.width-100])
+      .range([0, this.width])
       .clamp(true);
 
   this.brush = d3.svg.brush()
@@ -148,22 +178,7 @@ App.prototype.update = function() {
   d3.selectAll(".county")
     .attr("d", this.path);
 
-  d3.selectAll('.halo').remove();
-
-  d3.selectAll('.x, .axis')
-    .attr("transform", "translate(50," + (this.height - 50) + ")")
-    .call(d3.svg.axis()
-      .scale(self.x)
-      .orient("bottom")
-      .tickSize(0)
-      .tickPadding(12))
-    .select(".domain")
-    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr("class", "halo");
-
   this.slider.select(".background")
       .attr("height", this.height);
 
-  d3.selectAll('circle')
-      .attr("transform", "translate(50," + (this.height - 50) + ")");
 }

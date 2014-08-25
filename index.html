@@ -1,64 +1,116 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<style>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
 
-body {
-  margin:0px;
-  padding:0px;
-  background: #fff;
-}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-path {
-  fill: #fff;
-  stroke: #fff;
-  stroke-width:0px;
-}
+    <style>
 
-path.red {
-  fill: #39c;
-}
+    path.red {
+      fill: #39c;
+    }
+    
+    body {
+      margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;
+      padding: 0;
+      background: #fff;
+    }
 
-path.blue {
-  fill: #08c;
-}
+    path {
+      fill: #fff;
+      stroke: #fff;
+      stroke-width:0px;
+    }
 
-.axis {
-  font: 10px sans-serif;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    path:hover {
+      fill: red;
+    }
 
-.axis .domain {
-  fill: none;
-  stroke: #000;
-  stroke-opacity: .3;
-  stroke-width: 10px;
-}
+    path.red {
+      fill: #39c;
+    }
 
-.axis .halo {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 8px;
-}
+    path.blue {
+      fill: #08c;
+    }
 
-.slider .handle {
-  fill: #fff;
-  stroke: #000;
-  stroke-opacity: .5;
-  stroke-width: 1.25px;
-}
+    .axis {
+      font: 10px sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
 
-</style>
-<body>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
-<script src="js/moment.js"></script>
-<script src="js/app.js"></script>
-<script> 
-  var app;
-  $(document).on('ready', function() {
-    app = new App();
-  });
-</script>
+    .axis .domain {
+      fill: none;
+      stroke: #000;
+      stroke-opacity: .3;
+      stroke-width: 10px;
+    }
+
+    .axis .halo {
+      fill: none;
+      stroke: #ddd;
+      stroke-width: 8px;
+    }
+
+    .slider .handle {
+      fill: #fff;
+      stroke: #000;
+      stroke-opacity: .5;
+      stroke-width: 1.25px;
+    }
+
+    #slide-container {
+      position: absolute;
+      height: 40px;
+      width: 100%;
+      bottom: 0px;
+      background: rgba(27, 27, 27, 0.8);
+      cursor:pointer;
+    }
+    #slide, .slider {
+      cursor:pointer;
+      width:100%;
+      height:40px;
+    }
+    #slide-container .ui-slider-handle {
+      cursor:pointer;
+      background: #3887BE;
+      border: none;
+      width: 40px;
+      height: 40px;
+      top: 0;
+      position: absolute;
+      z-index: 2;
+      left:0;
+      color: #FFF;
+      font-size: 2em;
+      padding: 6px;
+      padding-left: 9px;
+    }
+    </style>
+    <body>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="js/app.js"></script>
+    <script> 
+      var app;
+      $(document).on('ready', function() {
+        app = new App();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="slide-container">
+      <svg id="slide">
+      </svg>
+      <i class="ui-slider-handle glyphicon glyphicon-forward" href="#"></i> 
+    </div>
+  </body>
+</html>
