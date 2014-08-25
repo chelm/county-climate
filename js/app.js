@@ -91,7 +91,7 @@ App.prototype.animate = function() {
   d3.timer(function() {
     self.brushed(null);
     self.t++;
-    if ( self.t === 360 ) {
+    if ( self.t >= 360 ) {
       self.t = 0;
     }
     return self._stop_animating;
@@ -103,7 +103,7 @@ App.prototype.animate = function() {
 App.prototype.brushed = function(e) {
   var self = this;
   var value = this.brush.extent()[0];
-
+  
   if ( d3.event ) {
     if (d3.event.sourceEvent) { // not a programmatic event
       this._stop_animating = true;
@@ -117,7 +117,7 @@ App.prototype.brushed = function(e) {
     this.brush.extent([value, value]);
   }
   
-  this.setDate(value);
+  this.setDate(Math.floor(value));
 
   d3.select('.ui-slider-handle').style('left', this.x(value)+'px');  
   d3.selectAll('path.county') 
