@@ -89,7 +89,7 @@ App.prototype.brushed = function(e) {
         var cls = self.color(self.temps[ d.properties.FIPS ][Math.floor(value)]);
         return cls;
       } else {
-        return 'grey';
+        return '#fff';
       }
     });
 }
@@ -113,7 +113,7 @@ App.prototype.load = function() {
               var cls = self.color(self.temps[ d.properties.FIPS ][index]);
               return cls;
             } else {
-              return '';
+              return '#fff';
             }
           });
     });
