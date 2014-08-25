@@ -110,7 +110,7 @@ App.prototype.load = function() {
             //console.log( d.properties.FIPS);
             //console.log( temps[ d.properties.FIPS ][index] );
             if ( self.temps[ d.properties.FIPS ] ){ 
-              var cls = self.color(self.temps[ d.properties.FIPS ][100]);
+              var cls = self.color(self.temps[ d.properties.FIPS ][index]);
               return cls;
             } else {
               return '';
