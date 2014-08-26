@@ -146,7 +146,6 @@ App.prototype.load = function() {
   var self = this;
   var index = 0;
 
-<<<<<<< HEAD
   this.setDate(index);
 
   var req = new XMLHttpRequest();
@@ -180,28 +179,6 @@ App.prototype.load = function() {
     f.readAsText(new Blob([data]))
   };
   req.send();
-=======
-  d3.json("data/out.json", function(error, data) {
-    self.temps = data;
-    d3.json("data/counties.json", function(error, topology) {
-      self.svg.selectAll("path")
-          .data(topojson.feature(topology, topology.objects.UScounties).features)
-        .enter().append("path")
-          .attr("d", self.path)
-          .attr('class', 'county')
-          .style("fill",function(d){ 
-            //console.log( d.properties.FIPS);
-            //console.log( temps[ d.properties.FIPS ][index] );
-            if ( self.temps[ d.properties.FIPS ] ){ 
-              var cls = self.color(self.temps[ d.properties.FIPS ][index]);
-              return cls;
-            } else {
-              return '#fff';
-            }
-          });
-    });
-  });
->>>>>>> fixed ak, hi
 }
 
 App.prototype.update = function() {
