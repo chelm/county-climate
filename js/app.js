@@ -1,5 +1,6 @@
 var App = function(){
   var self = this;
+
   this.width = window.innerWidth;
   this.height = window.innerHeight;
   self._stop_animating = true;
@@ -32,18 +33,19 @@ App.prototype.set = function() {
   var self = this; 
 
   this.projection = d3.geo.albersUsa()
-    .scale(1280)
+    .scale(this.width)
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
       .projection(this.projection);
 
   this.svg = d3.select("body").append("svg")
+      .attr("id", "map")
       .attr("width", this.width)
       .attr("height", this.height);
 
   this.x = d3.scale.linear()
-      .domain([0, 365])
+      .domain([0, 364])
       .range([40, this.width-40])
       .clamp(true);
 
@@ -130,7 +132,7 @@ App.prototype.brushed = function(e) {
 App.prototype.setDate = function(d) {
   var dateFromDay = function(year, day){
     var dx = new Date(year, 0); // initialize a date in `year-01-01`
-    return new Date(dx.setDate(day)); // add the number of days
+    return new Date(dx.setDate(day+1)); // add the number of days
   }
 
   var date = dateFromDay(2010, d); 
@@ -143,6 +145,8 @@ App.prototype.setDate = function(d) {
 App.prototype.load = function() {
   var self = this;
   var index = 0;
+
+  this.setDate(index);
 
   d3.json("data/out.json", function(error, data) {
     self.temps = data;
@@ -169,13 +173,13 @@ App.prototype.load = function() {
 App.prototype.update = function() {
   var self = this;
   this.projection = d3.geo.albersUsa()
-    .scale(1280)
+    .scale(this.width)
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
       .projection(this.projection);
 
-  d3.select('svg')
+  d3.select('#map')
       .attr("width", this.width)
       .attr("height", this.height);
 

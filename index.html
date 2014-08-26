@@ -5,55 +5,21 @@
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
     <style>
-
-    path.red {
-      fill: #39c;
-    }
 
     body {
       margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;
       padding: 0;
       background: #fff;
+      font-family:Oswald;
     }
 
     path {
       fill: #fff;
       stroke: #fff;
       stroke-width:0px;
-    }
-
-    path:hover {
-      fill: red;
-    }
-
-    path.red {
-      fill: #39c;
-    }
-
-    path.blue {
-      fill: #08c;
-    }
-
-    .axis {
-      font: 10px sans-serif;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-    .axis .domain {
-      fill: none;
-      stroke: #000;
-      stroke-opacity: .3;
-      stroke-width: 10px;
-    }
-
-    .axis .halo {
-      fill: none;
-      stroke: #ddd;
-      stroke-width: 8px;
     }
 
     .slider .handle {
@@ -70,6 +36,7 @@
       color: #444;
     }
     #slide-container {
+      cursor:pointer;
       position: absolute;
       height: 43px;
       width: 100%;
@@ -84,7 +51,7 @@
     }
     #slide-container .ui-slider-handle {
       cursor:pointer;
-      background: #446780;
+      background: rgb(68, 125, 237);
       pointer-events:none;
       border: none;
       width: 40px;
@@ -101,7 +68,7 @@
     }
     #slide-container .ui-play-pause {
       cursor:pointer;
-      background: #446780;
+      background: #555;
       border: none;
       width: 40px;
       height: 43px;
@@ -118,13 +85,22 @@
 
     #legend {
       position:absolute;
-      bottom: 20px;
+      bottom: 40px;
+      left: 25px;
+      
     }
 
-    #legend div {
-     width: 20px;
-      height: 20px;
+    #legend .bar {
       float:left;
+      width: 30px;
+      height: 14px;
+      float: left;
+      font-size: 10px;
+      text-align: center;
+      color: #fff;
+    }
+    .citation {
+      font-size: 10px;
     }
     </style>
     <body>
@@ -150,14 +126,16 @@
       <i class="ui-slider-handle glyphicon glyphicon-resize-horizontal" href="#"></i> 
     </div>
     <div id="legend">
-      <div id="30"></div>
-      <div id="40"></div>
-      <div id="50"></div>
-      <div id="60"></div>
-      <div id="70"></div>
-      <div id="80"></div>
-      <div id="90"></div>
-      <div id="100"></div>
+      <span>Legend (F)</span><br/>
+      <div class="bar" id="30">30</div>
+      <div class="bar" id="40">40</div>
+      <div class="bar" id="50">50</div>
+      <div class="bar" id="60">60</div>
+      <div class="bar" id="70">70</div>
+      <div class="bar" id="80">80</div>
+      <div class="bar" id="90">90</div>
+      <div class="bar" id="100">100</div>
+      <br/><span class="citation">Source: North America Land Data Assimilation System (NLDAS) Daily Air Temperatures and Heat Index, years 1979-2011</span>
     </div>
   </body>
 </html>
