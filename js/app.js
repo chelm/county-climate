@@ -8,7 +8,7 @@ var App = function(){
   this.set();
   this.load();
 
-  $(window).on('resize', function() {
+  d3.select(window).on('resize', function(){
   
     self.width = window.innerWidth;
     self.height = window.innerHeight;
@@ -16,13 +16,13 @@ var App = function(){
 
   });
 
-  $('.ui-play-pause').on('click', function() {
+  d3.select('.ui-play-pause').on('click', function() {
     if ( self._stop_animating === true ) {
-      $(this).removeClass('glyphicon-play').addClass('glyphicon-pause');
+      d3.select( '.ui-play-pause' ).attr('class', 'ui-play-pause glyphicon glyphicon-pause');
       self._stop_animating = false;
       self.animate();
     } else {
-      $(this).removeClass('glyphicon-pause').addClass('glyphicon-play');
+      d3.select( '.ui-play-pause' ).attr('class', 'ui-play-pause glyphicon glyphicon-play');
       self._stop_animating = true;
     }
   });
@@ -103,7 +103,7 @@ App.prototype.brushed = function(e) {
   if ( d3.event ) {
     if (d3.event.sourceEvent) { // not a programmatic event
       this._stop_animating = true;
-      $(this).removeClass('glyphicon-play').addClass('glyphicon-pause');
+      d3.select('.ui-play-pause').attr('class', 'ui-play-pause glyphicon glyphicon-play');
       value = this.x.invert(d3.mouse(e)[0]);
       this.brush.extent([value, value]);
       this.t = value;
@@ -115,7 +115,7 @@ App.prototype.brushed = function(e) {
   
   this.setDate(value);
 
-  $('.ui-slider-handle').css('left', this.x(value)+'px');
+  d3.select('.ui-slider-handle').style('left', this.x(value)+'px');  
   d3.selectAll('path.county') 
     .style("fill",function(d){
       if ( self.temps[ d.properties.FIPS ] ){ 
@@ -136,10 +136,10 @@ App.prototype.setDate = function(d) {
   }
 
   var date = dateFromDay(2010, d); 
-  date = moment(date).format("MMMM DD");
-  $('#date').html(date);
+  var formatter = new Intl.DateTimeFormat("en", { month: "long" });
+  var month = formatter.format(date);
+  d3.select('#date').html(month +' '+ date.getDate());
 }
-
 
 
 App.prototype.load = function() {
@@ -148,26 +148,37 @@ App.prototype.load = function() {
 
   this.setDate(index);
 
-  d3.json("data/out.json", function(error, data) {
-    self.temps = data;
-    d3.json("data/counties.json", function(error, topology) {
-      self.svg.selectAll("path")
-          .data(topojson.feature(topology, topology.objects.UScounties).features)
-        .enter().append("path")
-          .attr("d", self.path)
-          .attr('class', 'county')
-          .style("fill",function(d){ 
-            //console.log( d.properties.FIPS);
-            //console.log( temps[ d.properties.FIPS ][index] );
-            if ( self.temps[ d.properties.FIPS ] ){ 
-              var cls = self.color(self.temps[ d.properties.FIPS ][index]);
-              return cls;
-            } else {
-              return '#fff';
-            }
-          });
-    });
-  });
+  var req = new XMLHttpRequest();
+  req.open('GET', 'data/out.json.gz', true);
+  req.responseType = 'arraybuffer';
+
+  req.onload = function(){
+    gzdata = new Uint8Array(req.response);
+    data = (new Zlib.Gunzip(gzdata)).decompress();
+
+    var f = new FileReader();
+    f.onload = function(e) {
+      var data = JSON.parse(e.target.result);
+      self.temps = data;
+      d3.json("data/counties.json", function(error, topology) {
+        self.svg.selectAll("path")
+            .data(topojson.feature(topology, topology.objects.UScounties).features)
+          .enter().append("path")
+            .attr("d", self.path)
+            .attr('class', 'county')
+            .style("fill",function(d){ 
+              if ( self.temps[ d.properties.FIPS ] ){ 
+                var cls = self.color(self.temps[ d.properties.FIPS ][index]);
+                return cls;
+              } else {
+                return '#fff';
+              }
+            });
+      });
+    }
+    f.readAsText(new Blob([data]))
+  };
+  req.send();
 }
 
 App.prototype.update = function() {
