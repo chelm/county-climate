@@ -33,7 +33,7 @@ App.prototype.set = function() {
   var self = this; 
 
   this.projection = d3.geo.albersUsa()
-    .scale(Math.min(this.width+(this.width/3), 1000))
+    .scale(Math.min(this.width+(this.width/2), 1200))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
@@ -43,6 +43,10 @@ App.prototype.set = function() {
       .attr("id", "map")
       .attr("width", this.width)
       .attr("height", this.height);
+
+  this.chart = d3.select("#chart").append("svg")
+      .attr("width", 300)
+      .attr("height", 200);
 
   this.x = d3.scale.linear()
       .domain([0, 364])
@@ -189,8 +193,7 @@ App.prototype.load = function() {
 App.prototype.update = function() {
   var self = this;
   this.projection = d3.geo.albersUsa()
-    .scale(Math.min(this.width+(this.width/3), 1000))
-    //.scale(this.width+(this.width/3))
+    .scale(Math.min(this.width+(this.width/2), 1200))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()

@@ -29,12 +29,8 @@
       stroke-width: 1.25px;
     }
     #date {
-      top:85px;
-      left:10px;
-      position: absolute;
-      font-size: 2.5em;
-      font-size: 4vw;
-      color: #444;
+      color: #ddd;
+      padding: 0 5px;
     }
     #slide-container {
       cursor:pointer;
@@ -55,14 +51,13 @@
       background: rgb(68, 125, 237);
       pointer-events:none;
       border: none;
-      width: 40px;
       height: 43px;
       top: 0;
       position: absolute;
       z-index: 2;
       left:43px;
       color: #FFF;
-      font-size: 2em;
+      font-size: 16px;
       padding: 6px;
       padding-left: 6px;
       padding-top: 8px;
@@ -93,21 +88,25 @@
 
     #legend .bar {
       float:left;
-      width: 30px;
-      height: 14px;
+      width: 40px;
+      height: 20px;
       float: left;
       font-size: 10px;
       text-align: center;
       color: #fff;
+      padding:4px 3px;
     }
     .citation {
       font-size: 10px;
     }
     #desc {
       position: absolute;
-      top: 45px;
+      bottom: 45px;
       left: 10px;
       font-size: 3vw;
+    }
+    #chart {
+      position: absolute;
     }
     </style>
     <body>
@@ -124,16 +123,16 @@
   </head>
 
   <body onload="init()">
-    <div id="desc">Average maximum temperature (F) from 1979-2011</div>
-    <div id="date"></div>
     <div id="slide-container">
       <svg id="slide">
       </svg>
       <i class="ui-play-pause glyphicon glyphicon-play" href="#"></i> 
-      <i class="ui-slider-handle glyphicon glyphicon-resize-horizontal" href="#"></i> 
+      <i class="ui-slider-handle" href="#"><div id="date"></div></i> 
     </div>
+    <div id="chart"></div>
+    <div id="desc">Average maximum temperature (F) from 1979-2011</div>
     <div id="legend">
-      <span>Legend (F)</span><br/>
+      <!--span>Legend (F)</span><br/-->
       <div class="bar" id="30">30</div>
       <div class="bar" id="40">40</div>
       <div class="bar" id="50">50</div>
@@ -142,7 +141,7 @@
       <div class="bar" id="80">80</div>
       <div class="bar" id="90">90</div>
       <div class="bar" id="100">100</div>
-      <br/><span class="citation">Source: North America Land Data Assimilation System (NLDAS) Daily Air Temperatures and Heat Index, years 1979-2011</span>
+      <br/><span class="citation">Source: <a target="_blank" href="http://wonder.cdc.gov/NASA-NLDAS.html">North America Land Data Assimilation System (NLDAS) Daily Air Temperatures and Heat Index, years 1979-2011</a></span>
     </div>
   </body>
 </html>
