@@ -8,6 +8,22 @@
     <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
     <style>
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .x.axis path {
+      display: none;
+    }
+
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
 
     body {
       margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;
@@ -83,7 +99,6 @@
       position:absolute;
       bottom: 10px;
       left: 10px;
-      
     }
 
     #legend .bar {
@@ -99,14 +114,21 @@
     .citation {
       font-size: 10px;
     }
+
     #desc {
       position: absolute;
       bottom: 45px;
       left: 10px;
       font-size: 3vw;
     }
+
     #chart {
-      position: absolute;
+      position:absolute;
+      bottom: 40px;
+      right: 25px; 
+      width:550px;
+      height:200px;
+      background:#EEE;
     }
     </style>
     <body>
@@ -114,6 +136,7 @@
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="js/moment.js"></script>
     <script src="js/gunzip.min.js"></script>
+    <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
     <script> 
       function init(){
@@ -143,5 +166,6 @@
       <div class="bar" id="100">100</div>
       <br/><span class="citation">Source: <a target="_blank" href="http://wonder.cdc.gov/NASA-NLDAS.html">North America Land Data Assimilation System (NLDAS) Daily Air Temperatures and Heat Index, years 1979-2011</a></span>
     </div>
+    <div id="chart"></div>
   </body>
 </html>

@@ -3,7 +3,7 @@ var App = function(){
 
   this.width = window.innerWidth;
   this.height = window.innerHeight;
-  self._stop_animating = true;
+  self._stop_animating = false;
 
   this.set();
   this.load();
@@ -78,7 +78,6 @@ App.prototype.set = function() {
       return self.color(d3.select(this).node().id);
     });
 
-  //this.animate();
 }
 
 
@@ -185,9 +184,10 @@ App.prototype.load = function() {
           }
         });
     }
-    f.readAsText(new Blob([data]))
+    f.readAsText(new Blob([data]));
   };
   req.send();
+
 }
 
 App.prototype.update = function() {
@@ -221,4 +221,92 @@ App.prototype.update = function() {
   this.slider.select(".background")
       .attr("height", this.height);
 
+}
+
+
+App.prototype.buildChart = function() {
+  var self = this;
+  var margin = {top: 5, right: 5, bottom: 5, left: 5},
+    width = 550,
+    height = 200;
+
+  var parseDate = d3.time.format("%Y%m%d").parse;
+
+  var x = d3.time.scale()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var color = d3.scale.category10();
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var line = d3.svg.line()
+      .interpolate("basis")
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.temperature); });
+
+  var svg = d3.select("#chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+  d3.tsv("test-data.tsv", function(error, data) {
+    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+    
+    var keys = _.keys(self.temps);
+    var countyTemps = [];
+    _.each(keys, function(key) {
+      var obj = {};
+      var ts = self.temps[key];
+      var vals = [];
+      
+      _.each(ts, function(tmp, i) {
+        var o = {};
+        o.date = i;
+        o.temperature = parseInt(tmp);
+        vals.push(o);
+      });
+
+      obj.name = key;
+      obj.values = vals;
+      countyTemps.push(obj);
+
+    });
+    console.log('countyTemps', countyTemps);
+
+    console.log('keys', keys);
+    x.domain([1, 365]);
+    y.domain([
+      d3.min(countyTemps, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+      d3.max(countyTemps, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+    ]);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Temperature (ºF)");
+
+    var city = svg.selectAll(".city")
+        .data(countyTemps)
+      .enter().append("g")
+        .attr("class", "city");
+
+    city.append("path")
+        .attr("class", "line")
+        .attr("d", function(d) { return line(d.values); })
+        .style("stroke-width", 0.1);
+        //.style("stroke", function(d) { return color(d.name); });
+
+  });
 }
