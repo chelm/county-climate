@@ -295,7 +295,7 @@ App.prototype.updateChart = function(d) {
   select[0].values.pop();
 
   x.domain([0, 365]);
-  y.domain([20, 100
+  y.domain([10, 105
     //d3.min(select, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
     //d3.max(select, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
   ]);
