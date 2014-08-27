@@ -44,10 +44,6 @@ App.prototype.set = function() {
       .attr("width", this.width)
       .attr("height", this.height);
 
-  this.chart = d3.select("#chart").append("svg")
-      .attr("width", 300)
-      .attr("height", 200);
-
   this.x = d3.scale.linear()
       .domain([0, 364])
       .range([40, this.width-40])
@@ -182,7 +178,14 @@ App.prototype.load = function() {
           } else {
             return '#fff';
           }
+        })
+        .on('mouseover', function(d) {
+          d3.select('#county-name').html(d.properties.NAME);
+          d3.select('#state').html(d.properties.STATE_NAME);
+          self.updateChart(d);
         });
+
+      self.buildChart();
     }
     f.readAsText(new Blob([data]));
   };
@@ -226,13 +229,42 @@ App.prototype.update = function() {
 
 App.prototype.buildChart = function() {
   var self = this;
-  var margin = {top: 5, right: 5, bottom: 5, left: 5},
-    width = 550,
-    height = 200;
+  var keys = _.keys(self.temps);
+  var countyTemps = [];
+
+  _.each(keys, function(key) {
+    var obj = {};
+    var ts = self.temps[key];
+    var vals = [];
+    
+    _.each(ts, function(tmp, i) {
+      var o = {};
+      o.date = i;
+      o.temperature = parseInt(tmp);
+      vals.push(o);
+    });
+
+    obj.name = key;
+    obj.values = vals;
+    countyTemps.push(obj);
+
+  });
+  
+  countyTemps = countyTemps.slice(0, 3100);
+  this.countyTemps = countyTemps;
+
+}
+
+App.prototype.updateChart = function(d) {
+  var self = this;
+  
+  var margin = {top: 5, right: 5, bottom: 5, left: 30},
+    width = 280,
+    height = 165;
 
   var parseDate = d3.time.format("%Y%m%d").parse;
 
-  var x = d3.time.scale()
+  var x = d3.scale.linear()
       .range([0, width]);
 
   var y = d3.scale.linear()
@@ -249,64 +281,44 @@ App.prototype.buildChart = function() {
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.temperature); });
 
+  d3.select('#chart svg').remove();
   var svg = d3.select("#chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+ 
+  //var c = [self.countyTemps[0]];
+  var select = _.where(self.countyTemps, {name: d.properties.FIPS});
+  select[0].values.pop();
 
-  d3.tsv("test-data.tsv", function(error, data) {
-    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-    
-    var keys = _.keys(self.temps);
-    var countyTemps = [];
-    _.each(keys, function(key) {
-      var obj = {};
-      var ts = self.temps[key];
-      var vals = [];
-      
-      _.each(ts, function(tmp, i) {
-        var o = {};
-        o.date = i;
-        o.temperature = parseInt(tmp);
-        vals.push(o);
-      });
+  x.domain([0, 365]);
+  y.domain([
+    d3.min(select, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+    d3.max(select, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+  ]);
 
-      obj.name = key;
-      obj.values = vals;
-      countyTemps.push(obj);
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".61em")
+      .style("text-anchor", "end")
+      .style("font-size", "0.6em")
+      .text("Max Temperature (ºF)");
 
-    });
-    console.log('countyTemps', countyTemps);
+  var city = svg.selectAll(".city")
+      .data(select)
+    .enter().append("g")
+      .attr("class", "city");
 
-    console.log('keys', keys);
-    x.domain([1, 365]);
-    y.domain([
-      d3.min(countyTemps, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
-      d3.max(countyTemps, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
-    ]);
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Temperature (ºF)");
-
-    var city = svg.selectAll(".city")
-        .data(countyTemps)
-      .enter().append("g")
-        .attr("class", "city");
-
-    city.append("path")
-        .attr("class", "line")
-        .attr("d", function(d) { return line(d.values); })
-        .style("stroke-width", 0.1);
-        //.style("stroke", function(d) { return color(d.name); });
-
-  });
+  city.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke-width", 0.5);
+      //.style("stroke", function(d) { return color(d.name); });
 }

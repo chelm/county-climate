@@ -122,13 +122,22 @@
       font-size: 3vw;
     }
 
+    #info {
+      position: absolute;
+      bottom: 25px;
+      right: 40px;
+      width: 280px;
+      height: 215px;
+    }
+    #county-name {
+      font-size:2em;
+    }
     #chart {
-      position:absolute;
-      bottom: 40px;
-      right: 25px; 
-      width:550px;
-      height:200px;
-      background:#EEE;
+      width:280px;
+      height:165px;
+    }
+    #chart text {
+      font-size:0.6em;
     }
     </style>
     <body>
@@ -152,7 +161,6 @@
       <i class="ui-play-pause glyphicon glyphicon-play" href="#"></i> 
       <i class="ui-slider-handle" href="#"><div id="date"></div></i> 
     </div>
-    <div id="chart"></div>
     <div id="desc">Average maximum temperature (F) from 1979-2011</div>
     <div id="legend">
       <!--span>Legend (F)</span><br/-->
@@ -166,6 +174,11 @@
       <div class="bar" id="100">100</div>
       <br/><span class="citation">Source: <a target="_blank" href="http://wonder.cdc.gov/NASA-NLDAS.html">North America Land Data Assimilation System (NLDAS) Daily Air Temperatures and Heat Index, years 1979-2011</a></span>
     </div>
-    <div id="chart"></div>
+    <div id="info">
+      <div id="county-name"></div>
+      <div id="state"></div>
+      <div id="chart">
+      </div>
+    </div>
   </body>
 </html>
