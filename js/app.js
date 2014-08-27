@@ -33,7 +33,7 @@ App.prototype.set = function() {
   var self = this; 
 
   this.projection = d3.geo.albersUsa()
-    .scale(this.width)
+    .scale(Math.min(this.width+(this.width/3), 1000))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
@@ -135,10 +135,9 @@ App.prototype.setDate = function(d) {
     return new Date(dx.setDate(day+1)); // add the number of days
   }
 
-  var date = dateFromDay(2010, d); 
-  var formatter = new Intl.DateTimeFormat("en", { month: "long" });
-  var month = formatter.format(date);
-  d3.select('#date').html(month +' '+ date.getDate());
+  var date = dateFromDay(2010, d);
+  date = moment(date).format("MMMM DD");
+  d3.select('#date').html(date);
 }
 
 
@@ -147,6 +146,18 @@ App.prototype.load = function() {
   var index = 0;
 
   this.setDate(index);
+
+  d3.json("data/counties.json", function(error, topology) {
+    self.svg.selectAll("path")
+        .data(topojson.feature(topology, topology.objects.UScounties).features)
+      .enter().append("path")
+        .attr("d", self.path)
+        .attr('class', 'county')
+        .style("fill", '#777')
+        .on('mouseover', function( d ){
+          //console.log(d);
+        });
+  });
 
   var req = new XMLHttpRequest();
   req.open('GET', 'data/out.json.gz', true);
@@ -160,21 +171,15 @@ App.prototype.load = function() {
     f.onload = function(e) {
       var data = JSON.parse(e.target.result);
       self.temps = data;
-      d3.json("data/counties.json", function(error, topology) {
-        self.svg.selectAll("path")
-            .data(topojson.feature(topology, topology.objects.UScounties).features)
-          .enter().append("path")
-            .attr("d", self.path)
-            .attr('class', 'county')
-            .style("fill",function(d){ 
-              if ( self.temps[ d.properties.FIPS ] ){ 
-                var cls = self.color(self.temps[ d.properties.FIPS ][index]);
-                return cls;
-              } else {
-                return '#fff';
-              }
-            });
-      });
+      d3.selectAll('.county')
+        .style("fill",function(d){ 
+          if ( self.temps[ d.properties.FIPS ] ){ 
+            var cls = self.color(self.temps[ d.properties.FIPS ][index]);
+            return cls;
+          } else {
+            return '#fff';
+          }
+        });
     }
     f.readAsText(new Blob([data]))
   };
@@ -184,7 +189,8 @@ App.prototype.load = function() {
 App.prototype.update = function() {
   var self = this;
   this.projection = d3.geo.albersUsa()
-    .scale(this.width)
+    .scale(Math.min(this.width+(this.width/3), 1000))
+    //.scale(this.width+(this.width/3))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()

@@ -29,10 +29,11 @@
       stroke-width: 1.25px;
     }
     #date {
-      margin-top:40px;
-      right:10px;
+      top:85px;
+      left:10px;
       position: absolute;
       font-size: 2.5em;
+      font-size: 4vw;
       color: #444;
     }
     #slide-container {
@@ -85,8 +86,8 @@
 
     #legend {
       position:absolute;
-      bottom: 40px;
-      left: 25px;
+      bottom: 10px;
+      left: 10px;
       
     }
 
@@ -102,10 +103,17 @@
     .citation {
       font-size: 10px;
     }
+    #desc {
+      position: absolute;
+      top: 45px;
+      left: 10px;
+      font-size: 3vw;
+    }
     </style>
     <body>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="js/moment.js"></script>
     <script src="js/gunzip.min.js"></script>
     <script src="js/app.js"></script>
     <script> 
@@ -116,6 +124,7 @@
   </head>
 
   <body onload="init()">
+    <div id="desc">Average maximum temperature (F) from 1979-2011</div>
     <div id="date"></div>
     <div id="slide-container">
       <svg id="slide">
