@@ -3,7 +3,7 @@ var App = function(){
 
   this.width = window.innerWidth;
   this.height = window.innerHeight;
-  self._stop_animating = false;
+  self._stop_animating = true;
 
   this.set();
   this.load();
