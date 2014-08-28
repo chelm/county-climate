@@ -33,7 +33,7 @@ App.prototype.set = function() {
   var self = this; 
 
   this.projection = d3.geo.albersUsa()
-    .scale(Math.min(this.width+(this.width/2), 1200))
+    .scale(Math.min(this.width+(this.width/2), 1000))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
@@ -196,7 +196,7 @@ App.prototype.load = function() {
 App.prototype.update = function() {
   var self = this;
   this.projection = d3.geo.albersUsa()
-    .scale(Math.min(this.width+(this.width/2), 1200))
+    .scale(Math.min(this.width+(this.width/2), 1000))
     .translate([this.width / 2, this.height / 2.2]);
 
   this.path = d3.geo.path()
